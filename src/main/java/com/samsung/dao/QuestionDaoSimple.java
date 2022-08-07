@@ -1,6 +1,8 @@
 package com.samsung.dao;
 
 import com.samsung.domain.Question;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -9,19 +11,22 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class QuestionDaoSimple implements QuestionDao {
 
-    private List<Question> questions;
+    private Cache<Question> cache;
 
-    private String pathToCsvFile;
+    private final String pathToCsvFile;
 
-    public QuestionDaoSimple(String pathToCsvFile) {
+    public QuestionDaoSimple(@Value("${pathToCsvFile}") String pathToCsvFile) {
         this.pathToCsvFile = pathToCsvFile;
+        cache = new Cache<>();
     }
 
     @Override
     public List<Question> findAll() {
-        if(questions != null) return questions;
+        if(cache.getList() != null) return cache.getList();
+        ArrayList<Question> questions = new ArrayList<>();
         questions = new ArrayList<>();
         BufferedReader csvReader = null;
         try {
@@ -46,6 +51,7 @@ public class QuestionDaoSimple implements QuestionDao {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        cache.setList(questions);
         return questions;
     }
 }
