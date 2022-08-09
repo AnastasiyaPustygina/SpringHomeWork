@@ -17,4 +17,19 @@ public class QuestionServiceImpl implements QuestionService{
     public List<Question> getAll() {
         return dao.findAll();
     }
+
+    @Override
+    public Question getById(int id) {
+        return dao.findById(id);
+    }
+
+    @Override
+    public void deleteById(int id) {
+        dao.deleteById(id);
+    }
+
+    @Override
+    public void save(Question question) {
+        dao.save(question);
+    }
 }

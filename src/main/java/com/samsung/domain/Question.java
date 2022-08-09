@@ -7,12 +7,12 @@ import java.util.Objects;
 @AllArgsConstructor
 public class Question {
 
-    private int number;
+    private int id;
     private String text;
     private String answer;
 
-    public int getNumber() {
-        return number;
+    public int getId() {
+        return id;
     }
 
     public String getText() {
@@ -26,7 +26,7 @@ public class Question {
     @Override
     public String toString() {
         return "Question{" +
-                "number=" + number +
+                "id=" + id +
                 ", text='" + text + '\'' +
                 ", answer='" + answer + '\'' +
                 '}';
@@ -37,11 +37,11 @@ public class Question {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Question question = (Question) o;
-        return number == question.number && Objects.equals(text, question.text) && Objects.equals(answer, question.answer);
+        return id == question.id && Objects.equals(text, question.text) && Objects.equals(answer, question.answer);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(number, text, answer);
+        return Objects.hash(id, text, answer);
     }
 }
