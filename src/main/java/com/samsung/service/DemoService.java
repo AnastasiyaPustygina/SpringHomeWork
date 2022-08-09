@@ -13,8 +13,8 @@ import java.util.Scanner;
 @Service
 public class DemoService {
 
-    @Value("${numberForPassExam}")
-    private int numberForPassExam;
+    @Value("${idForPassExam}")
+    private int idForPassExam;
 
     private final QuestionService questionService;
 
@@ -31,14 +31,14 @@ public class DemoService {
         System.out.println("Ok, now you can answer the questions. Let's start!");
         List<Question> questionList = questionService.getAll();
         for (Question question : questionList) {
-            System.out.println(question.getNumber()
+            System.out.println(question.getId()
                     + ". " + question.getText());
             String answer = scanner.nextLine();
             if(answer.equals(question.getAnswer())) points++;
         }
         System.out.println(points == 1 ? name + ", your result is " + points + " correct answer" :
                 name + ", your result is " + points + " correct answers");
-        System.out.println(points < numberForPassExam ? "Unfortunately, you failed the test..." :
+        System.out.println(points < idForPassExam ? "Unfortunately, you failed the test..." :
                 "Congratulations! You passed the test!");
     }
 }

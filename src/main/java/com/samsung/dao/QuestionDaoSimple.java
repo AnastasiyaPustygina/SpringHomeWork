@@ -10,11 +10,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class QuestionDaoSimple implements QuestionDao {
 
-    private Cache<Question> cache;
+    private final Cache<Question> cache;
 
     private final String pathToCsvFile;
 
@@ -25,9 +26,7 @@ public class QuestionDaoSimple implements QuestionDao {
 
     @Override
     public List<Question> findAll() {
-        if(cache.getList() != null) return cache.getList();
-        ArrayList<Question> questions = new ArrayList<>();
-        questions = new ArrayList<>();
+        if(cache.getList() != null) return (ArrayList<Question>)cache.getList();
         BufferedReader csvReader = null;
         try {
             csvReader = new BufferedReader(new FileReader(
@@ -44,14 +43,31 @@ public class QuestionDaoSimple implements QuestionDao {
                 e.printStackTrace();
             }
             String[] data = row.split(";");
-            questions.add(new Question(Integer.parseInt(data[0]), data[1], data[2]));
+            cache.addToList(new Question(Integer.parseInt(data[0]), data[1], data[2]));
         }
         try {
             csvReader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        cache.setList(questions);
-        return questions;
+        return (ArrayList<Question>)cache.getList();
+    }
+
+    @Override
+    public Question findById(int id){
+        ArrayList<Question> questions = (ArrayList<Question>) findAll();
+        return questions.stream().filter(q -> q.getId() == id).collect(Collectors.toList()).get(0);
+    }
+
+    @Override
+    public void deleteById(int id){
+        List<Question> list = cache.getList();
+        list.remove(findById(id));
+        cache.setList(list);
+    }
+
+    @Override
+    public void save(Question question) {
+        cache.addToList(question);
     }
 }
