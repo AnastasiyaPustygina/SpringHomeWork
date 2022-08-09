@@ -5,5 +5,8 @@ import com.samsung.domain.Question;
 import java.util.List;
 
 public interface QuestionDao {
-    public List<Question> findAll();
+    List<Question> findAll();
+    Question findById(int id);
+    void deleteById(int id);
+    void save(Question question);
 }
