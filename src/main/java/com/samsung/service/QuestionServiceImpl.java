@@ -32,4 +32,8 @@ public class QuestionServiceImpl implements QuestionService{
     public void save(Question question) {
         dao.save(question);
     }
+    @Override
+    public void changeLanguage(String pathToCsvFile){
+        dao.changeLanguage(pathToCsvFile);
+    }
 }

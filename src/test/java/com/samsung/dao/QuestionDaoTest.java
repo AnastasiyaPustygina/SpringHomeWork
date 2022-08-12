@@ -5,6 +5,8 @@ import com.samsung.domain.Question;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.springframework.boot.test.context.SpringBootTest;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
@@ -15,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @DisplayName("Класс QuestionDao")
+@SpringBootTest
 public class QuestionDaoTest {
     private final String csv = "dataFindAllTest.csv";
     private QuestionDaoSimple dao;

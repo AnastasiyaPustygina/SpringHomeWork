@@ -9,4 +9,6 @@ public interface QuestionDao {
     Question findById(int id);
     void deleteById(int id);
     void save(Question question);
+    void changeLanguage(String pathToCsvFile);
+
 }
