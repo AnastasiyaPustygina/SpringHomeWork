@@ -1,6 +1,9 @@
 spring:
   messages:
     basename: i18n/messages
+  shell:
+    interactive:
+      enabled: false
 numberForPassExam: 3
 logging:
   level:

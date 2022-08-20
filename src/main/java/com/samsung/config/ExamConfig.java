@@ -9,7 +9,7 @@ public class ExamConfig {
     @Bean(name="messageSource")
     public ResourceBundleMessageSource bundleMessageSource() {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-        messageSource.setBasename("messages");
+        messageSource.setBasename("i18n/messages");
         return messageSource;
     }
 }

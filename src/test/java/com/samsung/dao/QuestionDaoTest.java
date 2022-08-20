@@ -1,11 +1,14 @@
 package com.samsung.dao;
 
 
+import com.samsung.Main;
 import com.samsung.domain.Question;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -18,8 +21,12 @@ import java.util.List;
 
 @DisplayName("Класс QuestionDao")
 @SpringBootTest
+@ActiveProfiles("test")
 public class QuestionDaoTest {
+
+
     private final String csv = "dataFindAllTest.csv";
+
     private QuestionDaoSimple dao;
 
     @BeforeEach
