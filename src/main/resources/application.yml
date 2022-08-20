@@ -1,1 +1,11 @@
+spring:
+  messages:
+    basename: i18n/messages
 numberForPassExam: 3
+logging:
+  level:
+    org:
+      springframework:
+        web: ERROR
+    com:
+      samsung: DEBUG

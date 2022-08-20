@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@PropertySource({"classpath:messages_en_US.properties"})
+@PropertySource({"classpath:i18n/messages_en_US.properties"})
 @Repository
 public class QuestionDaoSimple implements QuestionDao {
 
