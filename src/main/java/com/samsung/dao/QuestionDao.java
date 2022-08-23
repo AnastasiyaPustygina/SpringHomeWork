@@ -8,7 +8,7 @@ public interface QuestionDao {
     List<Question> findAll();
     Question findById(int id);
     void deleteById(int id);
-    void save(Question question);
+    Question save(Question question);
     void changeLanguage(String pathToCsvFile);
 
 }

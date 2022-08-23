@@ -1,7 +1,9 @@
+numberForPassExam: 3
 spring:
   messages:
     basename: i18n/messages
-numberForPassExam: 3
+    fallback-to-system:
+      locale: false
 logging:
   level:
     org:

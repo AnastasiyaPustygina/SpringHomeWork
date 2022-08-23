@@ -1,4 +1,5 @@
 package com.samsung.domain;
+
 import lombok.AllArgsConstructor;
 import lombok.Value;
 

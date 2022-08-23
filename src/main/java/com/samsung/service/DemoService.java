@@ -4,47 +4,50 @@ import com.samsung.domain.Question;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Locale;
 import java.util.Scanner;
 
 @PropertySource("classpath:application.yml")
 @Service
-@RequiredArgsConstructor
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class DemoService {
 
-    @Value("${numberForPassExam}")
-    private int numberForPassExam;
-    @Autowired
-    private Environment environment;
-    private int points;
-    private final MessageSource messageSource;
     private final QuestionService questionService;
-    private String languageTag;
+    private final LocalizedMessage localizedMessage;
+    @Value("${numberForPassExam}")
+    private final int numberForPassExam;
+    private int points;
+    private String name;
+    private final Scanner scanner = new Scanner(System.in);
 
     public void questionDemo(){
-        points = 0;
-        Scanner scanner = new Scanner(System.in);
-        while (languageTag == null) {
+        selectLanguage();
+        login();
+        testStudent();
+        showResult();
+    }
+
+    public void selectLanguage(){
+        while (true) {
             System.out.println("Select the language - write RU or EN");
             String language = scanner.nextLine();
-            if(language.equals("RU")) {
-                languageTag = "ru-RU";
-                questionService.changeLanguage(environment.getProperty("path-to-csv-file"));
-            }
-            else{
-                if(language.equals("EN")){
-                    languageTag = "en-US";
-                }
+            if(language.equals("RU") || language.equals("EN")) {
+                localizedMessage.selectLanguage(language.equals("RU") ? "ru-RU" : "");
+                questionService.changeLanguage(localizedMessage.getMessage("path-to-csv-file"));
+                break;
             }
         }
-        System.out.println(getMessage("string.greeting-edit-name"));
-        String name = scanner.nextLine();
-        System.out.println(getMessage("string.greeting-lets-start"));
+    }
+
+    public void login(){
+        System.out.println(localizedMessage.getMessage("string.greeting-edit-name"));
+        name = scanner.nextLine();
+        System.out.println(localizedMessage.getMessage("string.greeting-lets-start"));
+    }
+    public void testStudent(){
+        System.out.println(localizedMessage.getMessage("string.greeting-lets-start"));
         List<Question> questionList = questionService.getAll();
         questionList.forEach(q -> {
             System.out.println(q.getId() + ". " + q.getText());
@@ -52,29 +55,27 @@ public class DemoService {
                 points++;
             }
         });
-        System.out.print(name + getMessage("string.result1") + points + " ");
-        if(languageTag.equals("ru-RU")) {
-            switch (points) {
-                case 1:
-                    System.out.println(getMessage("string.resultWithOnePoint2"));
-                    break;
-                case 0:
-                case 5:
-                    System.out.println(getMessage("string.resultWithZeroOrFivePoint2"));
-                    break;
-                default:
-                    System.out.println(getMessage("string.resultWithOtherPoint2"));
-            }
-        }
-        else{
-            System.out.println(points == 1 ? getMessage(getMessage(
-                    "string.resultWithOnePoint2")) : getMessage("string.result2"));
-        }
-        System.out.println(points < numberForPassExam ? getMessage("string.FallTest"):
-                getMessage("string.PassTest"));
     }
-    private String getMessage(String nameOfVariable){
-        return messageSource.getMessage(nameOfVariable,
-                null, Locale.forLanguageTag(languageTag));
+
+    public void showResult(){
+        System.out.print(name + localizedMessage.getMessage("string.result1") + points + " ");
+        switch (points) {
+            case 1:
+                System.out.println(localizedMessage.getMessage("string.resultWithOnePoint2"));
+                break;
+            case 0:
+            case 5:
+                System.out.println(localizedMessage.getMessage("string.resultWithZeroOrFivePoint2"));
+                break;
+            default:
+                System.out.println(localizedMessage.getMessage("string.resultWithOtherPoint2"));
+        }
+        System.out.println(points < numberForPassExam ? localizedMessage.getMessage("string.FallTest"):
+                localizedMessage.getMessage("string.PassTest"));
     }
+
+    public void resetResult(){
+        points = 0;
+    }
+
 }
