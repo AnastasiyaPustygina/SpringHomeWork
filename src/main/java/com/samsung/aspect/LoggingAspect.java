@@ -15,8 +15,13 @@ public class LoggingAspect {
         Logger log = LogManager.getLogger(LoggingAspect.class);
         log.debug("Class name: {}", joinPoint.getTarget().getClass().getName());
         log.debug("Start of Method: {}", joinPoint.getSignature().getName());
+        long timeBefore = System.nanoTime();
         Object object = joinPoint.proceed();
-        log.debug("End of Method: {}", joinPoint.getSignature().getName());
+        long timeAfter = System.nanoTime();
+        if(object != null){
+            log.debug("Result of Method: {}", object.toString());
+        }
+        log.debug("Method execution time: {}", timeAfter - timeBefore);
         return object;
     }
 }

@@ -24,6 +24,7 @@ public class ExamCommands {
         isLanguageSelected = true;
     }
     @ShellMethod(value = "login command", key = {"n", "name", "login"})
+    @ShellMethodAvailability(value = "isLanguageSelected")
     public void login() {
         demoService.login();
         isLogged = true;
