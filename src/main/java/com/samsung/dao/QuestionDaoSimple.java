@@ -1,18 +1,18 @@
 package com.samsung.dao;
 
 import com.samsung.domain.Question;
+import com.samsung.exception.QuestionNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Repository;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-@PropertySource({"classpath:i18n/messages_en_US.properties"})
+@PropertySource({"classpath:i18n/messages.properties"})
 @Repository
 public class QuestionDaoSimple implements QuestionDao {
 
@@ -24,11 +24,44 @@ public class QuestionDaoSimple implements QuestionDao {
         this.pathToCsvFile = pathToCsvFile;
         cache = new Cache<Question>();
     }
+    @Override
+    public List<Question> findAll(){
+        if(cache.getList() == null) {
+            addToCache(getQuestionsFromCsv(pathToCsvFile));
+        }
+        return cache.getList();
+    }
+    @Override
+    public Question findById(int id) throws QuestionNotFoundException{
+        List<Question> questions = findAll();
+        return questions.stream().filter(q -> q.getId() == id).findAny().orElseThrow(
+                () -> new QuestionNotFoundException("Question with id " + id + " not found"));
+    }
+    @Override
+    public void deleteById(int id) throws QuestionNotFoundException{
+        cache.removeFromList(findById(id));
+    }
+    @Override
+    public Question save(Question question) {
+        if(cache.getList() == null) {
+            addToCache(getQuestionsFromCsv(pathToCsvFile));
+        }
+        cache.addToList(question);
+        return question;
+    }
 
     @Override
-    public List<Question> findAll() {
-        if(cache.getList() != null) return cache.getList();
+    public void changeLanguage(String pathToCsvFile){
+        this.pathToCsvFile = pathToCsvFile;
+        if(cache.getList() != null) {
+            cache.clearList();
+            addToCache(getQuestionsFromCsv(pathToCsvFile));
+        }
+    }
+
+    private List<Question> getQuestionsFromCsv(String pathToCsvFile){
         BufferedReader csvReader = null;
+        List<Question> questions = new ArrayList<>();
         try {
             csvReader = new BufferedReader(new FileReader(
                     pathToCsvFile));
@@ -40,42 +73,22 @@ public class QuestionDaoSimple implements QuestionDao {
             try {
                 if ((row = csvReader.readLine()) == null)
                     break;
-            } catch (IOException e) {
+            }catch (IOException e) {
                 e.printStackTrace();
             }
             String[] data = row.split(";");
-            cache.addToList(new Question(Integer.parseInt(
+            questions.add(new Question(Integer.parseInt(
                     data[0]), data[1], data[2]));
         }
         try {
             csvReader.close();
-        } catch (IOException e) {
+        }catch (IOException e) {
             e.printStackTrace();
         }
-        return cache.getList();
+        return questions;
     }
 
-    @Override
-    public Question findById(int id){
-        List<Question> questions = findAll();
-        return questions.stream().filter(q -> q.getId() == id).collect(
-                Collectors.toList()).get(0);
-    }
-
-    @Override
-    public void deleteById(int id){
-        List<Question> list = cache.getList();
-        list.remove(findById(id));
-        cache.setList(list);
-    }
-
-    @Override
-    public void save(Question question) {
-        cache.addToList(question);
-    }
-
-    @Override
-    public void changeLanguage(String pathToCsvFile){
-        this.pathToCsvFile = pathToCsvFile;
+    private void addToCache(List<Question> questions){
+        questions.forEach(cache::addToList);
     }
 }

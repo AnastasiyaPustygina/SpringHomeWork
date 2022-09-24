@@ -3,15 +3,16 @@ package com.samsung.service;
 import com.samsung.dao.QuestionDao;
 import com.samsung.domain.Question;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class QuestionServiceImpl implements QuestionService{
 
-    private QuestionDao dao;
+    private final QuestionDao dao;
 
     @Override
     public List<Question> getAll() {
@@ -29,8 +30,8 @@ public class QuestionServiceImpl implements QuestionService{
     }
 
     @Override
-    public void save(Question question) {
-        dao.save(question);
+    public Question save(Question question) {
+        return dao.save(question);
     }
     @Override
     public void changeLanguage(String pathToCsvFile){

@@ -1,17 +1,15 @@
 package com.samsung.dao;
 
 
-import com.samsung.Main;
 import com.samsung.domain.Question;
+import com.samsung.exception.QuestionNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -23,7 +21,6 @@ import java.util.List;
 @SpringBootTest
 @ActiveProfiles("test")
 public class QuestionDaoTest {
-
 
     private final String csv = "dataFindAllTest.csv";
 
@@ -67,15 +64,15 @@ public class QuestionDaoTest {
     public void shouldAddQuestion(){
         int sizeBefore = dao.findAll().size();
         Question question = new Question(4, "How much is 5 * 9?", "45");
-        dao.save(question);
+        Question daoQuestion =  dao.save(question);
         assertEquals(sizeBefore + 1, dao.findAll().size());
+        assertEquals(daoQuestion, question);
     }
 
     @DisplayName("Должен удалять вопрос по id")
     @Test
     public void shouldDeleteQuestionById(){
-        int sizeBefore = dao.findAll().size();
         dao.deleteById(1);
-        assertEquals(sizeBefore - 1, dao.findAll().size());
+        assertThrows(QuestionNotFoundException.class, () -> dao.findById(1));
     }
 }
